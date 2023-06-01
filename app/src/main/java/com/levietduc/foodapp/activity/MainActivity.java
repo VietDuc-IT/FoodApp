@@ -5,10 +5,15 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import com.levietduc.foodapp.R;
 import com.levietduc.foodapp.adapter.adapterCategory;
@@ -19,12 +24,22 @@ import com.levietduc.foodapp.model.modelBanner;
 import com.levietduc.foodapp.model.modelCategory;
 import com.levietduc.foodapp.model.modelPopular;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
+    public static SQLiteDatabase db;
+
+    public static final String DB_NAME = "zikiFood_db.db";
+    public static final String DB_PATH_SUFFIX = "/databases/";
+    public static final String TBL_NAME = "tb_category";
     ActivityMainBinding binding;
     adapterCategory adapterCategory;
     adapterPopular adapterPopular;
@@ -34,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<modelPopular> populars;
     ArrayList<modelBanner> banners;
 
+    ArrayAdapter<modelCategory> adapter;
     private Timer timer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +58,86 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        copyDB();
+        openDB();
+
         viewPagerBanner();
         autoSlideImage();
-        recyclerViewCategory();
+        //recyclerViewCategory();
         recyclerViewPopular();
     }
+    //=========================================== DATA ===========================================
+    private void copyDB() {
+        try{
+            File dbFile = getDatabasePath(DB_NAME);
+            if(!dbFile.exists()){
+                if(processCopy()){
+                    Toast.makeText(MainActivity.this,
+                            "Copy database successful!", Toast.LENGTH_LONG).show();
+                }else{
+                    Toast.makeText(MainActivity.this,
+                            "Copy database fail!", Toast.LENGTH_LONG).show();
+                }
+            }
+        }catch (Exception e){
+            Log.e("Error: ", e.toString());
+        }
+    }
 
+    private boolean processCopy() {
+        String dbPath = getApplicationInfo().dataDir + DB_PATH_SUFFIX +
+                DB_NAME;
+        try {
+            InputStream inputStream = getAssets().open(DB_NAME);
+            File f = new File(getApplicationInfo().dataDir + DB_PATH_SUFFIX);
+            if(!f.exists()){
+                f.mkdir();
+            }
+            OutputStream outputStream = new FileOutputStream(dbPath);
+            byte[] buffer = new byte[1024]; int length;
+            while((length=inputStream.read(buffer))>0){
+                outputStream.write(buffer,0, length);
+            }
+            outputStream.flush(); outputStream.close(); inputStream.close();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private void openDB() {
+        db = openOrCreateDatabase(DB_NAME,MODE_PRIVATE,null);
+    }
+    //=========================================  =============================================
+    private void loadDataFromDB() {
+        categories = new ArrayList<>();
+        modelCategory p;
+
+        Cursor cursor = db.query(TBL_NAME,null,null,null,null,null,null);
+
+        while (cursor.moveToNext()) {
+            //int pId = cursor.getInt(0);
+            String pName = cursor.getString(1);
+            String pPoto = cursor.getString(2);
+            //double pPrice = cursor.getDouble(2);
+            p = new modelCategory(pName,pPoto);
+            categories.add(p);
+        }
+        cursor.close();
+
+        adapter = new ArrayAdapter<modelCategory>(this, android.R.layout.simple_list_item_1,categories);
+
+        binding.viewCategory.setAdapter(adapterCategory);
+    }
+
+    @Override
+    protected void onResume() {
+        loadDataFromDB();
+        super.onResume();
+    }
+
+    //========================================= BANNER =============================================
     private void viewPagerBanner() {
         banners = new ArrayList<>();
         banners.add(new modelBanner(R.drawable.banner));
@@ -57,7 +147,6 @@ public class MainActivity extends AppCompatActivity {
         adapterBanner = new adapterBanner(this,banners);
         binding.viewPagerBanner.setAdapter(adapterBanner);
     }
-
     private void autoSlideImage() {
         if(banners == null || banners.isEmpty() || binding.viewPagerBanner == null){
             return;
@@ -86,7 +175,6 @@ public class MainActivity extends AppCompatActivity {
             }
         },1000,5000);
     }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -95,8 +183,8 @@ public class MainActivity extends AppCompatActivity {
             timer = null;
         }
     }
-
-    private void recyclerViewCategory() {
+    //========================================= CATEGORY =============================================
+    /*private void recyclerViewCategory() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, false);
         binding.viewCategory.setLayoutManager(linearLayoutManager);
 
@@ -109,8 +197,8 @@ public class MainActivity extends AppCompatActivity {
 
         adapterCategory = new adapterCategory(categories);
         binding.viewCategory.setAdapter(adapterCategory);
-    }
-
+    }*/
+    //=========================================== POPULAR ===========================================
     private void recyclerViewPopular(){
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
         binding.viewPopular.setLayoutManager(linearLayoutManager);
