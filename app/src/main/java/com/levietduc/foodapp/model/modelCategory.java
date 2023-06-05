@@ -1,27 +1,27 @@
 package com.levietduc.foodapp.model;
 
 public class modelCategory {
-    private String title;
-    private String pic;
+    private String name;
+    private String img;
 
-    public modelCategory(String title, String pic) {
-        this.title = title;
-        this.pic = pic;
+    public modelCategory(String name, String img) {
+        this.name = name;
+        this.img = img;
     }
 
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getPic() {
-        return pic;
+    public String getImg() {
+        return img;
     }
 
-    public void setPic(String pic) {
-        this.pic = pic;
+    public void setImg(String img) {
+        this.img = img;
     }
 }
