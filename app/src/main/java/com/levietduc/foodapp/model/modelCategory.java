@@ -4,6 +4,8 @@ public class modelCategory {
     private String name;
     private String img;
 
+    public modelCategory(){}
+
     public modelCategory(String name, String img) {
         this.name = name;
         this.img = img;
