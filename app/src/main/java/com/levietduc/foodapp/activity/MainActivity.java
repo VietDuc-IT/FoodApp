@@ -8,8 +8,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
+import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.FirebaseDatabase;
@@ -132,14 +138,49 @@ public class MainActivity extends AppCompatActivity {
         adapterPopular.startListening();
     }
 
-    @Override
+    /*@Override
     protected void onStop() {
         super.onStop();
         adapterPopular.stopListening();
         adapterPopular.stopListening();
-    }
+    }*/
     //=========================================== EVENTS ===========================================
     private void addEvents() {
+        //=========================================== SEARCH ===========================================
+        binding.editextSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                goToSearchView(editable.toString());
+            }
+
+            private void goToSearchView(String toString) {
+                FirebaseRecyclerOptions<modelPopular> options =
+                        new FirebaseRecyclerOptions.Builder<modelPopular>()
+                                .setQuery(FirebaseDatabase.getInstance().getReference().child("/foodApp/product").orderByChild("name").startAt(toString).endAt(toString+"~"),modelPopular.class)
+                                .build();
+
+                adapterPopular = new adapterPopular(options);
+                adapterPopular.startListening();
+                binding.viewPopular.setAdapter(adapterPopular);
+            }
+        });
+
+        binding.txtShow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this,ProductActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }
