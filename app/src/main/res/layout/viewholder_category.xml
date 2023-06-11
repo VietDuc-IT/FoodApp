@@ -10,7 +10,7 @@
 
     <ImageView
         android:id="@+id/imgCategory"
-        android:layout_width="35dp"
+        android:layout_width="60dp"
         android:layout_height="35dp"
         android:layout_margin="8dp"
         android:layout_marginStart="8dp"

@@ -1,11 +1,15 @@
 package com.levietduc.foodapp.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.MenuItem;
+import android.widget.AdapterView;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.FirebaseDatabase;
@@ -44,10 +48,8 @@ public class MainActivity extends AppCompatActivity {
         autoSlideImage();
         recyclerViewCategory();
         recyclerViewPopular();
+        addEvents();
     }
-
-    //=========================================== DATA ===========================================
-
 
     //========================================= BANNER =============================================
     private void viewPagerBanner() {
@@ -95,29 +97,18 @@ public class MainActivity extends AppCompatActivity {
             timer = null;
         }
     }
-    //========================================= CATEGORY =============================================
+    //========================================= CATEGORY ============================================
     private void recyclerViewCategory() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, false);
         binding.viewCategory.setLayoutManager(linearLayoutManager);
 
         FirebaseRecyclerOptions<modelCategory> options =
                 new FirebaseRecyclerOptions.Builder<modelCategory>()
-                        .setQuery(FirebaseDatabase.getInstance().getReference().child("category"),modelCategory.class)
+                        .setQuery(FirebaseDatabase.getInstance().getReference().child("/foodApp/category"),modelCategory.class)
                         .build();
 
         adapterCategory = new adapterCategory(options);
         binding.viewCategory.setAdapter(adapterCategory);
-    }
-    @Override
-    protected void onStart() {
-        super.onStart();
-        adapterCategory.startListening();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        adapterCategory.stopListening();
     }
 
     //=========================================== POPULAR ===========================================
@@ -125,12 +116,30 @@ public class MainActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
         binding.viewPopular.setLayoutManager(linearLayoutManager);
 
-        populars = new ArrayList<>();
-        populars.add(new modelPopular("Pizza","pop_1","abc",10.5,5));
-        populars.add(new modelPopular("Pizza","pop_2","abc",10.5,5));
-        populars.add(new modelPopular("Pizza","pop_3","abc",10.5,5));
+        FirebaseRecyclerOptions<modelPopular> options =
+                new FirebaseRecyclerOptions.Builder<modelPopular>()
+                        .setQuery(FirebaseDatabase.getInstance().getReference().child("/foodApp/product"),modelPopular.class)
+                        .build();
 
-        adapterPopular = new adapterPopular(populars);
+        adapterPopular = new adapterPopular(options);
         binding.viewPopular.setAdapter(adapterPopular);
+
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        adapterCategory.startListening();
+        adapterPopular.startListening();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        adapterPopular.stopListening();
+        adapterPopular.stopListening();
+    }
+    //=========================================== EVENTS ===========================================
+    private void addEvents() {
+
     }
 }

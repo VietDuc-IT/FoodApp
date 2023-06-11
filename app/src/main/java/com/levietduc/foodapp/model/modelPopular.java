@@ -1,42 +1,30 @@
 package com.levietduc.foodapp.model;
 
 public class modelPopular {
-    private String title;
-    private String pic;
-    private String description;
+    private String name,img;
     private Double price;
-    private int nubCart;
 
-    public modelPopular(String title, String pic, String description, Double price, int nubCart) {
-        this.title = title;
-        this.pic = pic;
-        this.description = description;
+    public modelPopular(){}
+    public modelPopular(String name, String img, Double price) {
+        this.name = name;
+        this.img = img;
         this.price = price;
-        this.nubCart = nubCart;
     }
 
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getPic() {
-        return pic;
+    public String getImg() {
+        return img;
     }
 
-    public void setPic(String pic) {
-        this.pic = pic;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public void setImg(String img) {
+        this.img = img;
     }
 
     public Double getPrice() {
@@ -45,13 +33,5 @@ public class modelPopular {
 
     public void setPrice(Double price) {
         this.price = price;
-    }
-
-    public int getNubCart() {
-        return nubCart;
-    }
-
-    public void setNubCart(int nubCart) {
-        this.nubCart = nubCart;
     }
 }
