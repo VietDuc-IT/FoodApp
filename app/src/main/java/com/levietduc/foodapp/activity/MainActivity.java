@@ -13,11 +13,14 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.levietduc.foodapp.R;
 import com.levietduc.foodapp.adapter.adapterCategory;
@@ -38,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
     adapterPopular adapterPopular;
     adapterBanner adapterBanner;
 
-    ArrayList<modelCategory> categories;
-    ArrayList<modelPopular> populars;
+    FirebaseDatabase database;
+    DatabaseReference category,product;
     ArrayList<modelBanner> banners;
 
     private Timer timer;
@@ -179,6 +182,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this,ProductActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        binding.btnCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this,CartActivity.class);
                 startActivity(intent);
             }
         });
