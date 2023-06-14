@@ -21,7 +21,9 @@ import com.levietduc.foodapp.model.modelPopular;
 import java.text.DecimalFormat;
 
 public class adapterPopular extends FirebaseRecyclerAdapter<modelPopular,adapterPopular.ViewHolder> {
-
+    private static final int VIEW_TYPE_1 = 1;
+    private static final int VIEW_TYPE_2 = 2;
+    Context context;
     /**
      * Initialize a {@link RecyclerView.Adapter} that listens to a Firebase query. See
      * {@link FirebaseRecyclerOptions} for configuration options.
@@ -33,7 +35,7 @@ public class adapterPopular extends FirebaseRecyclerAdapter<modelPopular,adapter
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull modelPopular model) {
+    protected void onBindViewHolder(@NonNull adapterPopular.ViewHolder holder, int position, @NonNull modelPopular model) {
         holder.popularName.setText(model.getName());
 
         DecimalFormat decimalFormat = new DecimalFormat("#,###");
@@ -41,12 +43,40 @@ public class adapterPopular extends FirebaseRecyclerAdapter<modelPopular,adapter
         holder.popularPrice.setText(String.valueOf(model.getPrice()));
 
         Glide.with(holder.popularImg.getContext()).load(model.getImg()).into(holder.popularImg);
-    }
 
-    @NonNull
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(holder.itemView.getContext(), DetailActivity.class);
+                intent.putExtra("object", model);
+                holder.itemView.getContext().startActivity(intent);
+            }
+        });
+    }
+    /*@NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_popular,parent,false);
+        return new ViewHolder(view);
+    }*/
+    @Override
+    public int getItemViewType(int position) {
+        // Xác định loại layout tương ứng cho mỗi item
+        if (position % 2 == 0) {
+            return VIEW_TYPE_1;
+        } else {
+            return VIEW_TYPE_2;
+        }
+    }
+    @NonNull
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view;
+        if (viewType == VIEW_TYPE_1) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_popular, parent, false);
+        } else {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewpager_product, parent, false);
+        }
         return new ViewHolder(view);
     }
 
@@ -55,31 +85,9 @@ public class adapterPopular extends FirebaseRecyclerAdapter<modelPopular,adapter
         ImageView popularImg;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            popularName = itemView.findViewById(R.id.txtTitle);
-            popularImg = itemView.findViewById(R.id.imgPopular);
-            popularPrice = itemView.findViewById(R.id.txtPrice);
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        // Lấy dữ liệu từ Firebase Realtime Database cho item được click
-                        modelPopular dataModel = getItem(position);
-
-                        // Tạo Intent để chuyển sang Activity khác và truyền dữ liệu
-                        Context context = itemView.getContext();
-                        Intent intent = new Intent(context, DetailActivity.class);
-                        // Truyền dữ liệu từ Firebase Realtime Database
-                        intent.putExtra("dataName", dataModel.getName());
-                        intent.putExtra("dataImg", dataModel.getImg());
-                        intent.putExtra("dataPrice", dataModel.getPrice());
-
-                        // Chạy Intent
-                        context.startActivity(intent);
-                    }
-                }
-            });
+            popularName = itemView.findViewById(R.id.txtTitleCart);
+            popularImg = itemView.findViewById(R.id.imgCart);
+            popularPrice = itemView.findViewById(R.id.txtPriceCart);
         }
     }
 }

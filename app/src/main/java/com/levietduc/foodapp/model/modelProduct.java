@@ -1,14 +1,27 @@
 package com.levietduc.foodapp.model;
 
-public class modelProduct {
+import java.io.Serializable;
+
+public class modelProduct implements Serializable {
     private String name,img;
     private Double price;
+    private int numberInCart;
 
     public modelProduct(){}
-    public modelProduct(String name, String img, Double price) {
+
+    public modelProduct(String name, String img, Double price, int numberInCart) {
         this.name = name;
         this.img = img;
         this.price = price;
+        this.numberInCart = numberInCart;
+    }
+
+    public int getNumberInCart() {
+        return numberInCart;
+    }
+
+    public void setNumberInCart(int numberInCart) {
+        this.numberInCart = numberInCart;
     }
 
     public String getName() {

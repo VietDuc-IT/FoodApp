@@ -1,11 +1,15 @@
 package com.levietduc.foodapp.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.FirebaseDatabase;
@@ -39,8 +43,19 @@ public class ProductActivity extends AppCompatActivity {
                 new FirebaseRecyclerOptions.Builder<modelProduct>()
                         .setQuery(FirebaseDatabase.getInstance().getReference().child("/foodApp/product"),modelProduct.class)
                         .build();
+        adapterProduct = new adapterProduct(options) {
+            @Override
+            public int getItemViewType(int position) {
+                return 2; // Chỉ định viewType là VIEW_TYPE_1 cho tất cả các item
+            }
 
-        adapterProduct = new adapterProduct(options);
+            @NonNull
+            @Override
+            public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewpager_product, parent, false);
+                return new ViewHolder(view);
+            }
+        };
         binding.viewProduct.setAdapter(adapterProduct);
 
     }
@@ -73,7 +88,19 @@ public class ProductActivity extends AppCompatActivity {
                                 .setQuery(FirebaseDatabase.getInstance().getReference().child("/foodApp/product").orderByChild("name").startAt(toString).endAt(toString+"~"),modelProduct.class)
                                 .build();
 
-                adapterProduct = new adapterProduct(options);
+                adapterProduct = new adapterProduct(options) {
+                    @Override
+                    public int getItemViewType(int position) {
+                        return 2; // Chỉ định viewType là VIEW_TYPE_1 cho tất cả các item
+                    }
+
+                    @NonNull
+                    @Override
+                    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewpager_product, parent, false);
+                        return new ViewHolder(view);
+                    }
+                };
                 adapterProduct.startListening();
                 binding.viewProduct.setAdapter(adapterProduct);
             }

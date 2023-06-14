@@ -16,13 +16,14 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.levietduc.foodapp.R;
 import com.levietduc.foodapp.activity.DetailActivity;
-import com.levietduc.foodapp.model.modelPopular;
 import com.levietduc.foodapp.model.modelProduct;
 
 import java.text.DecimalFormat;
 
 public class adapterProduct extends FirebaseRecyclerAdapter<modelProduct,adapterProduct.ViewHolder> {
-
+    private static final int VIEW_TYPE_1 = 1;
+    private static final int VIEW_TYPE_2 = 2;
+    Context context;
     /**
      * Initialize a {@link RecyclerView.Adapter} that listens to a Firebase query. See
      * {@link FirebaseRecyclerOptions} for configuration options.
@@ -42,12 +43,34 @@ public class adapterProduct extends FirebaseRecyclerAdapter<modelProduct,adapter
         holder.productPrice.setText(String.valueOf(model.getPrice()));
 
         Glide.with(holder.productImg.getContext()).load(model.getImg()).into(holder.productImg);
-    }
 
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(holder.itemView.getContext(), DetailActivity.class);
+                intent.putExtra("object", model);
+                holder.itemView.getContext().startActivity(intent);
+            }
+        });
+    }
+    @Override
+    public int getItemViewType(int position) {
+        // Xác định loại layout tương ứng cho mỗi item
+        if (position % 2 == 0) {
+            return VIEW_TYPE_1;
+        } else {
+            return VIEW_TYPE_2;
+        }
+    }
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewpager_product,parent,false);
+        View view;
+        if (viewType == VIEW_TYPE_1) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_popular, parent, false);
+        } else {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewpager_product, parent, false);
+        }
         return new ViewHolder(view);
     }
 
@@ -56,31 +79,9 @@ public class adapterProduct extends FirebaseRecyclerAdapter<modelProduct,adapter
         ImageView productImg;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            productName = itemView.findViewById(R.id.txtTitleProduct);
-            productPrice = itemView.findViewById(R.id.txtPriceProduct);
-            productImg = itemView.findViewById(R.id.imgProduct);
-
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        // Lấy dữ liệu từ Firebase Realtime Database cho item được click
-                        modelProduct dataModel = getItem(position);
-
-                        // Tạo Intent để chuyển sang Activity khác và truyền dữ liệu
-                        Context context = itemView.getContext();
-                        Intent intent = new Intent(context, DetailActivity.class);
-                        // Truyền dữ liệu từ Firebase Realtime Database
-                        intent.putExtra("dataName", dataModel.getName());
-                        intent.putExtra("dataImg", dataModel.getImg());
-                        intent.putExtra("dataPrice", dataModel.getPrice());
-
-                        // Chạy Intent
-                        context.startActivity(intent);
-                    }
-                }
-            });
+            productName = itemView.findViewById(R.id.txtTitleCart);
+            productPrice = itemView.findViewById(R.id.txtPriceCart);
+            productImg = itemView.findViewById(R.id.imgCart);
         }
     }
 }

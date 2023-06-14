@@ -1,6 +1,8 @@
 package com.levietduc.foodapp.model;
 
-public class modelCategory {
+import java.io.Serializable;
+
+public class modelCategory implements Serializable {
     private String name;
     private String img;
 
