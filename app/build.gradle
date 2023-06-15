@@ -43,6 +43,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:20.0.4'
     // FirebaseUI for Firebase Realtime Database
     implementation 'com.firebaseui:firebase-ui-database:8.0.2'
+    implementation 'com.google.firebase:firebase-firestore'
 
     implementation 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
 

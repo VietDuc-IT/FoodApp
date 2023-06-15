@@ -38,9 +38,9 @@ public class adapterProduct extends FirebaseRecyclerAdapter<modelProduct,adapter
     protected void onBindViewHolder(@NonNull adapterProduct.ViewHolder holder, int position, @NonNull modelProduct model) {
         holder.productName.setText(model.getName());
 
-        DecimalFormat decimalFormat = new DecimalFormat("#,###");
-        //holder.popularPrice.setText(decimalFormat.format(String.valueOf(model.getPrice())));
-        holder.productPrice.setText(String.valueOf(model.getPrice()));
+        DecimalFormat decimalFormat = new DecimalFormat("###,###,###");
+        String price = decimalFormat.format(model.getPrice());
+        holder.productPrice.setText(price);
 
         Glide.with(holder.productImg.getContext()).load(model.getImg()).into(holder.productImg);
 

@@ -14,10 +14,13 @@ import com.levietduc.foodapp.Helper.ManagmentCart;
 import com.levietduc.foodapp.adapter.adapterCart;
 import com.levietduc.foodapp.databinding.ActivityCartBinding;
 
+import java.text.DecimalFormat;
+
 public class CartActivity extends AppCompatActivity {
     ActivityCartBinding binding;
     private RecyclerView.Adapter adapter;
     private ManagmentCart managmentCart;
+    private double tax;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,7 +30,7 @@ public class CartActivity extends AppCompatActivity {
 
         managmentCart = new ManagmentCart(this);
         initList();
-        //calculateCart();
+        calculateCart();
         setVariable();
     }
 
@@ -61,8 +64,13 @@ public class CartActivity extends AppCompatActivity {
         }
     }
     private void calculateCart(){
+        /*double percentTax = 1;
+        double delivery = 1;
+        tax = Math.round((managmentCart.getTotail()*percentTax*100.0))/100.0;
+        double total = Math.round((managmentCart.getTotail()+tax+delivery)*100.0)/100;*/
+        DecimalFormat decimalFormat = new DecimalFormat("###,###,###");
         double total = managmentCart.getTotail();
-        binding.txtNumbPrice.setText(String.valueOf(total));
+        binding.txtNumbPrice.setText(decimalFormat.format(total)+" VNĐ");
     }
 
 }

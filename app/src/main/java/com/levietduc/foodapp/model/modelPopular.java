@@ -2,7 +2,7 @@ package com.levietduc.foodapp.model;
 
 import java.io.Serializable;
 
-public class modelPopular implements Serializable {
+public class modelPopular /*implements Serializable*/ {
     private String name,img;
     private Double price;
 

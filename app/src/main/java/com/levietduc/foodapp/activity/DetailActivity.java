@@ -25,6 +25,7 @@ public class DetailActivity extends AppCompatActivity {
     modelProduct modelProduct;
     private int numberOrder = 1;
     private ManagmentCart managmentCart;
+    DecimalFormat decimalFormat = new DecimalFormat("###,###,###");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +48,13 @@ public class DetailActivity extends AppCompatActivity {
                 .into(binding.imgDetail);
 
         binding.txtNameDetail.setText(modelProduct.getName());
-        binding.txtPriceDetail.setText(String.valueOf(modelProduct.getPrice()));
-        binding.btnAddToCard.setText("Thêm vào giỏ hàng "+Math.round(numberOrder*modelProduct.getPrice())+" VNĐ");
+
+        String price = decimalFormat.format(modelProduct.getPrice());
+        binding.txtPriceDetail.setText(price);
+
+        String addToCard = decimalFormat.format(Math.round(numberOrder*modelProduct.getPrice()));
+        binding.btnAddToCard.setText("Thêm vào giỏ hàng "+addToCard+" VNĐ");
+        //binding.btnAddToCard.setText("Thêm vào giỏ hàng "+Math.round(numberOrder*modelProduct.getPrice())+" VNĐ");
     }
     private void addEvents() {
         binding.btnBack.setOnClickListener(new View.OnClickListener() {
@@ -63,7 +69,9 @@ public class DetailActivity extends AppCompatActivity {
             public void onClick(View view) {
                 numberOrder = numberOrder + 1;
                 binding.txtNubItemCart.setText(String.valueOf(numberOrder));
-                binding.btnAddToCard.setText("Thêm vào giỏ hàng "+Math.round(numberOrder*modelProduct.getPrice())+" VNĐ");
+
+                String addToCard = decimalFormat.format(Math.round(numberOrder*modelProduct.getPrice()));
+                binding.btnAddToCard.setText("Thêm vào giỏ hàng "+addToCard+" VNĐ");
             }
         });
         binding.btnMinusCart.setOnClickListener(new View.OnClickListener() {
@@ -74,7 +82,9 @@ public class DetailActivity extends AppCompatActivity {
                 }else{
                     numberOrder = numberOrder - 1;
                     binding.txtNubItemCart.setText(String.valueOf(numberOrder));
-                    binding.btnAddToCard.setText("Thêm vào giỏ hàng "+Math.round(numberOrder*modelProduct.getPrice())+" VNĐ");
+
+                    String addToCard = decimalFormat.format(Math.round(numberOrder*modelProduct.getPrice()));
+                    binding.btnAddToCard.setText("Thêm vào giỏ hàng "+addToCard+" VNĐ");
                 }
             }
         });

@@ -10,13 +10,20 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.levietduc.foodapp.R;
 import com.levietduc.foodapp.adapter.adapterCategory;
 import com.levietduc.foodapp.adapter.adapterPopular;
@@ -29,6 +36,7 @@ import com.levietduc.foodapp.model.modelPopular;
 import com.levietduc.foodapp.model.modelProduct;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -41,7 +49,9 @@ public class MainActivity extends AppCompatActivity {
     FirebaseDatabase database;
     DatabaseReference category,product;
     ArrayList<modelBanner> banners;
-
+    FirebaseFirestore db;
+    List<modelPopular> modelPopularList;
+    adapterPopular adapterPopular;
     private Timer timer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,11 +60,41 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        db = FirebaseFirestore.getInstance();
+
         viewPagerBanner();
         autoSlideImage();
         recyclerViewCategory();
-        recyclerViewPopular();
+        //recyclerViewPopular();
         addEvents();
+        test();
+    }
+
+    private void test() {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
+        binding.viewPopular.setLayoutManager(linearLayoutManager);
+
+        modelPopularList = new ArrayList<>();
+        adapterPopular = new adapterPopular(this,modelPopularList);
+        binding.viewPopular.setAdapter(adapterPopular);
+
+        db.collection("product")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                modelPopular modelPopulars = document.toObject(modelPopular.class);
+                                modelPopularList.add(modelPopulars);
+                                adapterPopular.notifyDataSetChanged();
+                                Toast.makeText(MainActivity.this,""+task.getException(),Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(MainActivity.this,"Lỗi"+task.getException(),Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
     //========================================= BANNER =============================================
@@ -146,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         adapterCategory.startListening();
-        adapterProduct.startListening();
+        //adapterProduct.startListening();
     }
 
     /*@Override
@@ -158,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
     //=========================================== EVENTS ===========================================
     private void addEvents() {
         //=========================================== SEARCH ===========================================
-        binding.editextSearch.addTextChangedListener(new TextWatcher() {
+        /*binding.editextSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -184,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
                 adapterProduct.startListening();
                 binding.viewPopular.setAdapter(adapterProduct);
             }
-        });
+        });*/
 
         binding.txtShow.setOnClickListener(new View.OnClickListener() {
             @Override

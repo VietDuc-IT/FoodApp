@@ -59,7 +59,7 @@ public class ManagmentCart {
         ArrayList<modelProduct> listProduct2 = getListCart();
         double fee = 0;
         for(int i=0;i<listProduct2.size();i++){
-            fee = listProduct2.get(i).getPrice()*listProduct2.get(i).getNumberInCart();
+            fee = fee+(listProduct2.get(i).getPrice()*listProduct2.get(i).getNumberInCart());
         }
         return fee;
     }

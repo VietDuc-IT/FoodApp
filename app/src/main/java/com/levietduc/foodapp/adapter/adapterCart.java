@@ -16,6 +16,7 @@ import com.levietduc.foodapp.Helper.ManagmentCart;
 import com.levietduc.foodapp.R;
 import com.levietduc.foodapp.model.modelProduct;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class adapterCart extends RecyclerView.Adapter<adapterCart.ViewHolder> {
@@ -39,8 +40,13 @@ public class adapterCart extends RecyclerView.Adapter<adapterCart.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.title.setText(listProductSelection.get(position).getName());
-        holder.price.setText(String.valueOf(listProductSelection.get(position).getPrice()));
+
+        DecimalFormat decimalFormat = new DecimalFormat("###,###,###");
+        String formattedTotal = decimalFormat.format(listProductSelection.get(position).getPrice());
+        holder.price.setText(formattedTotal+" VNĐ");
+
         holder.totalEachItem.setText((int) Math.round(listProductSelection.get(position).getNumberInCart()*listProductSelection.get(position).getPrice())+"VNĐ");
+
         holder.num.setText(String.valueOf(listProductSelection.get(position).getNumberInCart()));
 
         Glide.with(holder.itemView.getContext())
