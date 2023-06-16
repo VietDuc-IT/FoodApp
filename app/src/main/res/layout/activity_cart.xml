@@ -133,7 +133,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <EditText
-                    android:id="@+id/editTextTextPersonName2"
+                    android:id="@+id/editTxtNumb"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
@@ -152,10 +152,10 @@
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName2" />
+                    app:layout_constraintTop_toBottomOf="@+id/editTxtNumb" />
 
                 <EditText
-                    android:id="@+id/editTextTextPersonName"
+                    android:id="@+id/editTxtAddress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
@@ -176,7 +176,7 @@
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName" />
+                    app:layout_constraintTop_toBottomOf="@+id/editTxtAddress" />
 
                 <EditText
                     android:id="@+id/editTextTextPersonName1"

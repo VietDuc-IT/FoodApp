@@ -17,13 +17,14 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.levietduc.foodapp.R;
 import com.levietduc.foodapp.activity.DetailActivity;
 import com.levietduc.foodapp.model.modelPopular;
+import com.levietduc.foodapp.model.modelProduct;
 
 import java.text.DecimalFormat;
 import java.util.List;
 
 public class adapterPopular extends RecyclerView.Adapter<adapterPopular.ViewHolder> {
-    private Context context;
-    private List<modelPopular> modelPopularList;
+    Context context;
+    List<modelPopular> modelPopularList;
 
     public adapterPopular(Context context, List<modelPopular> modelPopularList) {
         this.context = context;
@@ -45,6 +46,15 @@ public class adapterPopular extends RecyclerView.Adapter<adapterPopular.ViewHold
         holder.popularPrice.setText(price);
 
         Glide.with(holder.popularImg.getContext()).load(modelPopularList.get(position).getImg()).into(holder.popularImg);
+
+        /*holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, DetailActivity.class);
+                intent.putExtra("object",modelPopularList.get(position));
+                context.startActivity(intent);
+            }
+        });*/
     }
 
     @Override

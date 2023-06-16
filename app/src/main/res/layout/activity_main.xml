@@ -145,7 +145,7 @@
         <com.google.android.material.bottomappbar.BottomAppBar
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="55dp"
             android:layout_gravity="bottom"
             android:backgroundTint="#f6f6f6"
             app:fabCradleMargin="8dp"
@@ -161,7 +161,8 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.2"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="5dp">
 
                     <ImageView
                         android:layout_width="match_parent"
@@ -185,13 +186,14 @@
                     android:layout_height="match_parent"
                     android:layout_marginRight="50dp"
                     android:layout_weight="0.2"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="5dp">
 
                     <ImageView
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="40dp"
                         android:layout_weight="1"
-                        app:srcCompat="@drawable/btn3" />
+                        app:srcCompat="@drawable/icon_profile" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -208,7 +210,8 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.2"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="5dp">
 
                     <ImageView
                         android:layout_width="match_parent"
@@ -231,7 +234,8 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.2"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="5dp">
 
                     <ImageView
                         android:layout_width="match_parent"

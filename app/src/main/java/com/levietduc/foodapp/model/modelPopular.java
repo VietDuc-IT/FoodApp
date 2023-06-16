@@ -2,12 +2,12 @@ package com.levietduc.foodapp.model;
 
 import java.io.Serializable;
 
-public class modelPopular /*implements Serializable*/ {
+public class modelPopular implements Serializable{
     private String name,img;
-    private Double price;
+    private double price;
 
     public modelPopular(){}
-    public modelPopular(String name, String img, Double price) {
+    public modelPopular(String name, String img, double price) {
         this.name = name;
         this.img = img;
         this.price = price;
@@ -29,11 +29,11 @@ public class modelPopular /*implements Serializable*/ {
         this.img = img;
     }
 
-    public Double getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 }

@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseDatabase database;
     DatabaseReference category,product;
     ArrayList<modelBanner> banners;
-    FirebaseFirestore db;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     List<modelPopular> modelPopularList;
     adapterPopular adapterPopular;
     private Timer timer;
@@ -60,43 +60,12 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        db = FirebaseFirestore.getInstance();
-
         viewPagerBanner();
         autoSlideImage();
         recyclerViewCategory();
-        //recyclerViewPopular();
+        recyclerViewPopular();
         addEvents();
-        test();
     }
-
-    private void test() {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
-        binding.viewPopular.setLayoutManager(linearLayoutManager);
-
-        modelPopularList = new ArrayList<>();
-        adapterPopular = new adapterPopular(this,modelPopularList);
-        binding.viewPopular.setAdapter(adapterPopular);
-
-        db.collection("product")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                modelPopular modelPopulars = document.toObject(modelPopular.class);
-                                modelPopularList.add(modelPopulars);
-                                adapterPopular.notifyDataSetChanged();
-                                Toast.makeText(MainActivity.this,""+task.getException(),Toast.LENGTH_SHORT).show();
-                            }
-                        } else {
-                            Toast.makeText(MainActivity.this,"Lỗi"+task.getException(),Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }
-
     //========================================= BANNER =============================================
     private void viewPagerBanner() {
         banners = new ArrayList<>();
@@ -186,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         adapterCategory.startListening();
-        //adapterProduct.startListening();
+        adapterProduct.startListening();
     }
 
     /*@Override
@@ -246,6 +215,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(MainActivity.this,MainActivity.class));
+            }
+        });
+
+        binding.btnProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this,ProfileActivity.class));
             }
         });
     }
