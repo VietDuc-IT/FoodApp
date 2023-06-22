@@ -1,9 +1,12 @@
 package com.levietduc.foodapp.adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,20 +17,24 @@ import com.bumptech.glide.Glide;
 import com.levietduc.foodapp.Helper.ChangeNumberItemListener;
 import com.levietduc.foodapp.Helper.ManagmentCart;
 import com.levietduc.foodapp.R;
+import com.levietduc.foodapp.activity.CartActivity;
 import com.levietduc.foodapp.model.modelProduct;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 public class adapterCart extends RecyclerView.Adapter<adapterCart.ViewHolder> {
     ArrayList<modelProduct> listProductSelection;
     private ManagmentCart managmentCart;
     ChangeNumberItemListener changeNumberItemListener;
+    private Context context;
 
     public adapterCart(ArrayList<modelProduct> listProductSelection, Context context, ChangeNumberItemListener changeNumberItemListener) {
         this.listProductSelection = listProductSelection;
         managmentCart = new ManagmentCart(context);
         this.changeNumberItemListener = changeNumberItemListener;
+        this.context = context;
     }
 
     @NonNull

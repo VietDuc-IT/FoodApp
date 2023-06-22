@@ -15,12 +15,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.levietduc.foodapp.Helper.ManagmentCart;
 import com.levietduc.foodapp.databinding.ActivityProfileBinding;
 import com.levietduc.foodapp.model.modelProfile;
 import com.levietduc.foodapp.model.modelUser;
 
 public class ProfileActivity extends AppCompatActivity {
     ActivityProfileBinding binding;
+
+    ManagmentCart managmentCart;
 
     //Lấy Id người dùng
     FirebaseAuth mAuth = FirebaseAuth.getInstance();

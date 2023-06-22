@@ -1,26 +1,50 @@
 package com.levietduc.foodapp.activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.levietduc.foodapp.Helper.ChangeNumberItemListener;
 import com.levietduc.foodapp.Helper.ManagmentCart;
 import com.levietduc.foodapp.adapter.adapterCart;
 import com.levietduc.foodapp.databinding.ActivityCartBinding;
+import com.levietduc.foodapp.model.modelBuyNow;
+import com.levietduc.foodapp.model.modelProduct;
+import com.levietduc.foodapp.model.modelProfile;
+import com.levietduc.foodapp.model.modelUserOrder;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class CartActivity extends AppCompatActivity {
     ActivityCartBinding binding;
-    private RecyclerView.Adapter adapter;
+    adapterCart adapterCart;
+    RecyclerView.Adapter adapter;
     private ManagmentCart managmentCart;
     private double tax;
+    private DatabaseReference mDatabase;
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    FirebaseUser currentUser = mAuth.getCurrentUser();
+    String userId = currentUser.getUid();
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    String orderId = database.getReference().child("Orders").child(userId).push().getKey();
+    //String orderId = UUID.randomUUID().toString();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,18 +53,63 @@ public class CartActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         managmentCart = new ManagmentCart(this);
+
         initList();
         calculateCart();
-        setVariable();
+        showProfile();
+        showUser();
+        addEvents();
     }
-
-    private void setVariable() {
+    private void addEvents() {
         binding.btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
             }
         });
+
+        binding.btnAddToCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String userName = binding.editTxtName.getText().toString();
+                String userAddress = binding.editTxtAddress.getText().toString();
+                String userPhone = binding.edtTxtPhone.getText().toString();
+
+                String totalPrice = String.valueOf(managmentCart.getTotail());
+                writeNewUser(userId, userName, userPhone, userAddress, totalPrice);
+
+                List<modelProduct> cartList = managmentCart.getListCart();
+                for (modelProduct cart : cartList) {
+                    String itemName = cart.getName();
+                    String itemPrice = String.valueOf(cart.getPrice());
+                    String itemNub = String.valueOf(cart.getNumberInCart());
+
+                    writeNewOrder(itemName, itemNub, itemPrice);
+                }
+
+                Toast.makeText(CartActivity.this,"Đặt hàng thành công!",Toast.LENGTH_SHORT).show();
+                //startActivity(new Intent(CartActivity.this,MainActivity.class));
+                try {
+                    Thread.sleep(5000);
+                    startActivity(new Intent(CartActivity.this,MainActivity.class));
+                }catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                managmentCart.clear();
+            }
+        });
+    }
+
+    public void writeNewUser(String userId, String userName, String userPhone, String userAddress, String price) {
+        modelUserOrder userOrder = new modelUserOrder(userName, userPhone, userAddress, price);
+        DatabaseReference userOrderRef = database.getReference().child("Orders").child(userId).child(orderId).push();
+        userOrderRef.setValue(userOrder);
+    }
+
+    public void writeNewOrder(String itemName, String itemNub, String itemPrice) {
+        modelBuyNow buyNow = new modelBuyNow(itemName, itemNub, itemPrice);
+        DatabaseReference orderDetailRef = database.getReference().child("Orders").child(userId).child(orderId).child("Detail").push();
+        orderDetailRef.setValue(buyNow);
     }
 
     private void initList() {
@@ -72,5 +141,40 @@ public class CartActivity extends AppCompatActivity {
         double total = managmentCart.getTotail();
         binding.txtNumbPrice.setText(decimalFormat.format(total)+" VNĐ");
     }
+    private void showProfile() {
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Profile").child(userId);
+        mDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    String phone = dataSnapshot.child("phone").getValue(String.class);
+                    String address = dataSnapshot.child("address").getValue(String.class);
 
+                    binding.edtTxtPhone.setText(phone);
+                    binding.editTxtAddress.setText(address);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(CartActivity.this,"Lỗi",Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    private void showUser() {
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("User").child(userId);
+        mDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    String name = dataSnapshot.child("name").getValue(String.class);
+
+                    binding.editTxtName.setText(name);
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(CartActivity.this,"Lỗi",Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }

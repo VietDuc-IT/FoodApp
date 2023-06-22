@@ -118,7 +118,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/textView3"
@@ -133,12 +133,15 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <EditText
-                    android:id="@+id/editTxtNumb"
+                    android:id="@+id/editTxtName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:ems="10"
                     android:hint="Nhập tên"
                     android:inputType="textPersonName"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
@@ -146,18 +149,19 @@
                     android:id="@+id/textView12"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="8dp"
                     android:text="Địa chỉ"
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/editTxtNumb" />
+                    app:layout_constraintTop_toBottomOf="@+id/editTxtName" />
 
                 <EditText
                     android:id="@+id/editTxtAddress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:ems="10"
                     android:hint="Nhập địa chỉ"
                     android:inputType="textPersonName"
@@ -170,7 +174,7 @@
                     android:id="@+id/textView13"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="8dp"
                     android:text="Số điện thoại"
                     android:textColor="@color/black"
                     android:textSize="18sp"
@@ -179,9 +183,10 @@
                     app:layout_constraintTop_toBottomOf="@+id/editTxtAddress" />
 
                 <EditText
-                    android:id="@+id/editTextTextPersonName1"
+                    android:id="@+id/edtTxtPhone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:ems="10"
                     android:hint="Nhập số điện thoại"
                     android:inputType="textPersonName"
@@ -194,7 +199,10 @@
                     android:id="@+id/btnAddToCard"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="24dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="32dp"
                     android:background="@drawable/green_button"
                     android:text="Mua ngay"
                     android:textColor="@color/white"
@@ -202,7 +210,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName1" />
+                    app:layout_constraintTop_toBottomOf="@+id/edtTxtPhone" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
     </ScrollView>

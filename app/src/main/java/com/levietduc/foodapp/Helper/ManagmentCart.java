@@ -63,4 +63,8 @@ public class ManagmentCart {
         }
         return fee;
     }
+
+    public void clear(){
+        tinyDB.clear();
+    }
 }
