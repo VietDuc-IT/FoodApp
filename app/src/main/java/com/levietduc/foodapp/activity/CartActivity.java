@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 
@@ -75,27 +76,41 @@ public class CartActivity extends AppCompatActivity {
                 String userAddress = binding.editTxtAddress.getText().toString();
                 String userPhone = binding.edtTxtPhone.getText().toString();
 
-                String totalPrice = String.valueOf(managmentCart.getTotail());
-                writeNewUser(userId, userName, userPhone, userAddress, totalPrice);
+                if(TextUtils.isEmpty(userAddress)){
+                    Toast.makeText(CartActivity.this,"Bạn chưa nhập địa chỉ!",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if(TextUtils.isEmpty(userPhone)){
+                    Toast.makeText(CartActivity.this,"Bạn chưa nhập số điện thoại!",Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 List<modelProduct> cartList = managmentCart.getListCart();
                 for (modelProduct cart : cartList) {
                     String itemName = cart.getName();
                     String itemPrice = String.valueOf(cart.getPrice());
                     String itemNub = String.valueOf(cart.getNumberInCart());
+                    String itemImg = String.valueOf(cart.getImg());
 
-                    writeNewOrder(itemName, itemNub, itemPrice);
+                    writeNewOrder(itemName, itemNub, itemPrice, itemImg);
                 }
+                if(cartList.isEmpty()){
+                    Toast.makeText(CartActivity.this,"Giỏ hàng trống, mua thêm!",Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(CartActivity.this,MainActivity.class);
+                    startActivity(intent);
+                }else {
+                    String totalPrice = String.valueOf(managmentCart.getTotail());
+                    writeNewUser(userId, userName, userPhone, userAddress, totalPrice);
 
-                Toast.makeText(CartActivity.this,"Đặt hàng thành công!",Toast.LENGTH_SHORT).show();
-                //startActivity(new Intent(CartActivity.this,MainActivity.class));
-                try {
-                    Thread.sleep(5000);
-                    startActivity(new Intent(CartActivity.this,MainActivity.class));
-                }catch (InterruptedException e) {
-                    e.printStackTrace();
+                    Toast.makeText(CartActivity.this,"Đặt hàng thành công!",Toast.LENGTH_SHORT).show();
+                    try {
+                        Thread.sleep(5000);
+                        startActivity(new Intent(CartActivity.this,MainActivity.class));
+                    }catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    managmentCart.clear();
                 }
-                managmentCart.clear();
             }
         });
     }
@@ -106,8 +121,8 @@ public class CartActivity extends AppCompatActivity {
         userOrderRef.setValue(userOrder);
     }
 
-    public void writeNewOrder(String itemName, String itemNub, String itemPrice) {
-        modelBuyNow buyNow = new modelBuyNow(itemName, itemNub, itemPrice);
+    public void writeNewOrder(String itemName, String itemNub, String itemPrice, String itemImg) {
+        modelBuyNow buyNow = new modelBuyNow(itemName, itemNub, itemPrice, itemImg);
         DatabaseReference orderDetailRef = database.getReference().child("Orders").child(userId).child(orderId).child("Detail").push();
         orderDetailRef.setValue(buyNow);
     }

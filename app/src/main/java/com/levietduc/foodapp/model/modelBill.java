@@ -1,14 +1,17 @@
 package com.levietduc.foodapp.model;
 
-public class modelBuyNow {
-    String name,price,number,img;
-    public  modelBuyNow(){}
+import java.io.Serializable;
 
-    public modelBuyNow(String name, String number, String price, String img) {
-        this.name = name;
-        this.number = number;
-        this.price = price;
+public class modelBill implements Serializable {
+    String img, name, price, number;
+
+    public modelBill(){}
+
+    public modelBill(String img, String name, String price, String number) {
         this.img = img;
+        this.name = name;
+        this.price = price;
+        this.number = number;
     }
 
     public String getImg() {

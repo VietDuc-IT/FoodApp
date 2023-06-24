@@ -224,5 +224,12 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this,ProfileActivity.class));
             }
         });
+
+        binding.btnBill.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this,BillActivity.class));
+            }
+        });
     }
 }
