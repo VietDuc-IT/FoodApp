@@ -19,8 +19,10 @@ import com.levietduc.foodapp.activity.DetailActivity;
 import com.levietduc.foodapp.model.modelProduct;
 
 import java.text.DecimalFormat;
+import java.util.List;
 
 public class adapterProduct extends FirebaseRecyclerAdapter<modelProduct,adapterProduct.ViewHolder> {
+    List<modelProduct> modelProductList;
     private static final int VIEW_TYPE_1 = 1;
     private static final int VIEW_TYPE_2 = 2;
     Context context;
@@ -83,5 +85,10 @@ public class adapterProduct extends FirebaseRecyclerAdapter<modelProduct,adapter
             productPrice = itemView.findViewById(R.id.txtPriceCart);
             productImg = itemView.findViewById(R.id.imgCart);
         }
+    }
+    public void clear() {
+        int size = getItemCount();
+        modelProductList.clear();
+        notifyItemRangeRemoved(0, size);
     }
 }

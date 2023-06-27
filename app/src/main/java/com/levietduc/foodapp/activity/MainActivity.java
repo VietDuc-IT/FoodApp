@@ -124,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
 
         adapterCategory = new adapterCategory(options);
         binding.viewCategory.setAdapter(adapterCategory);
+        adapterCategory.startListening();
     }
 
     //=========================================== POPULAR ===========================================
@@ -133,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseRecyclerOptions<modelProduct> options =
                 new FirebaseRecyclerOptions.Builder<modelProduct>()
-                        .setQuery(FirebaseDatabase.getInstance().getReference().child("/foodApp/product"),modelProduct.class)
+                        .setQuery(FirebaseDatabase.getInstance().getReference().child("/foodApp/product").limitToFirst(6),modelProduct.class)
                         .build();
 
         adapterProduct = new adapterProduct(options) {
@@ -150,24 +151,13 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         binding.viewPopular.setAdapter(adapterProduct);
-    }
-    @Override
-    protected void onStart() {
-        super.onStart();
-        adapterCategory.startListening();
         adapterProduct.startListening();
     }
-
-    /*@Override
-    protected void onStop() {
-        super.onStop();
-        adapterPopular.stopListening();
-        adapterProduct.stopListening();
-    }*/
     //=========================================== EVENTS ===========================================
     private void addEvents() {
         //=========================================== SEARCH ===========================================
-        /*binding.editextSearch.addTextChangedListener(new TextWatcher() {
+        List<modelProduct> emptyList = new ArrayList<>();
+        binding.editextSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -180,20 +170,44 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                goToSearchView(editable.toString());
+                if(editable.toString().isEmpty()){
+                    emptyList.clear();
+                    adapterProduct.notifyDataSetChanged();
+                }else {
+                    goToSearchView(editable.toString());
+                }
             }
 
             private void goToSearchView(String toString) {
-                FirebaseRecyclerOptions<modelProduct> options =
-                        new FirebaseRecyclerOptions.Builder<modelProduct>()
-                                .setQuery(FirebaseDatabase.getInstance().getReference().child("/foodApp/product").orderByChild("name").startAt(toString).endAt(toString+"~"),modelProduct.class)
-                                .build();
+                if(toString.isEmpty()){
+                    emptyList.clear();
+                    adapterProduct.notifyDataSetChanged();
+                }else {
+                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.this,LinearLayoutManager.VERTICAL,false);
+                    binding.viewSearch.setLayoutManager(linearLayoutManager);
 
-                adapterProduct = new adapterProduct(options);
-                adapterProduct.startListening();
-                binding.viewPopular.setAdapter(adapterProduct);
+                    FirebaseRecyclerOptions<modelProduct> options =
+                            new FirebaseRecyclerOptions.Builder<modelProduct>()
+                                    .setQuery(FirebaseDatabase.getInstance().getReference().child("/foodApp/product").orderByChild("name").startAt(toString).endAt(toString+"~"),modelProduct.class)
+                                    .build();
+
+                    adapterProduct = new adapterProduct(options) {
+                        @Override
+                        public int getItemViewType(int position) {
+                            return 2; // Chỉ định viewType là VIEW_TYPE_1 cho tất cả các item
+                        }
+                        @NonNull
+                        @Override
+                        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewpager_product, parent, false);
+                            return new ViewHolder(view);
+                        }
+                    };
+                    binding.viewSearch.setAdapter(adapterProduct);
+                    adapterProduct.startListening();
+                }
             }
-        });*/
+        });
 
         binding.txtShow.setOnClickListener(new View.OnClickListener() {
             @Override

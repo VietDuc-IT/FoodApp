@@ -1,7 +1,7 @@
 package com.levietduc.foodapp.model;
 
 public class modelUserOrder {
-    String name, phone, address, price;
+    String orderId,name, phone, address, price;
 
     public modelUserOrder(String name, String phone, String address, String price) {
         this.name = name;

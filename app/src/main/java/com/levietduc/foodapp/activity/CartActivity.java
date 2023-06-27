@@ -117,13 +117,14 @@ public class CartActivity extends AppCompatActivity {
 
     public void writeNewUser(String userId, String userName, String userPhone, String userAddress, String price) {
         modelUserOrder userOrder = new modelUserOrder(userName, userPhone, userAddress, price);
-        DatabaseReference userOrderRef = database.getReference().child("Orders").child(userId).child(orderId).push();
+        DatabaseReference userOrderRef = database.getReference().child("Orders").child(userId).child(orderId);
         userOrderRef.setValue(userOrder);
     }
 
     public void writeNewOrder(String itemName, String itemNub, String itemPrice, String itemImg) {
         modelBuyNow buyNow = new modelBuyNow(itemName, itemNub, itemPrice, itemImg);
-        DatabaseReference orderDetailRef = database.getReference().child("Orders").child(userId).child(orderId).child("Detail").push();
+        //DatabaseReference orderDetailRef = database.getReference().child("Orders").child(userId).child(orderId).child("Detail").push();
+        DatabaseReference orderDetailRef = database.getReference().child("OrderDetail").child(orderId).push();
         orderDetailRef.setValue(buyNow);
     }
 

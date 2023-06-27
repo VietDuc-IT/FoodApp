@@ -4,13 +4,22 @@ import java.io.Serializable;
 
 public class modelCategory implements Serializable {
     private String name;
-    private String img;
+    private String img,type;
 
     public modelCategory(){}
 
-    public modelCategory(String name, String img) {
+    public modelCategory(String name, String img, String type) {
         this.name = name;
         this.img = img;
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getName() {

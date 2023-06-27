@@ -35,6 +35,7 @@ public class ProductActivity extends AppCompatActivity {
         recyclerViewPopular();
         searchProduct();
     }
+
     private void recyclerViewPopular(){
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
         binding.viewProduct.setLayoutManager(linearLayoutManager);
@@ -43,6 +44,7 @@ public class ProductActivity extends AppCompatActivity {
                 new FirebaseRecyclerOptions.Builder<modelProduct>()
                         .setQuery(FirebaseDatabase.getInstance().getReference().child("/foodApp/product"),modelProduct.class)
                         .build();
+
         adapterProduct = new adapterProduct(options) {
             @Override
             public int getItemViewType(int position) {
@@ -57,14 +59,8 @@ public class ProductActivity extends AppCompatActivity {
             }
         };
         binding.viewProduct.setAdapter(adapterProduct);
-
-    }
-    @Override
-    protected void onStart() {
-        super.onStart();
         adapterProduct.startListening();
     }
-
     private void searchProduct() {
         binding.editextSearch.addTextChangedListener(new TextWatcher() {
             @Override

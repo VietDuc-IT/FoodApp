@@ -61,6 +61,12 @@
                     app:srcCompat="@drawable/settings" />
 
             </LinearLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/viewSearch"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp" />
 
             <androidx.viewpager.widget.ViewPager
                 android:id="@+id/viewPagerBanner"
@@ -217,12 +223,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        app:srcCompat="@drawable/bottom_btn3" />
+                        app:srcCompat="@drawable/baseline_compare_arrows_24" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Hóa đơn"
+                        android:text="Lịch sử"
                         android:textAlignment="center"
                         android:textColor="#676767"
                         android:textSize="12sp" />
@@ -241,7 +247,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        app:srcCompat="@drawable/feedback" />
+                        app:srcCompat="@drawable/bottom_btn3" />
 
                     <TextView
                         android:layout_width="match_parent"
