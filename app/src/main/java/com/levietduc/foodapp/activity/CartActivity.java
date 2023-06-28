@@ -28,8 +28,12 @@ import com.levietduc.foodapp.model.modelProfile;
 import com.levietduc.foodapp.model.modelUserOrder;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class CartActivity extends AppCompatActivity {
@@ -44,7 +48,8 @@ public class CartActivity extends AppCompatActivity {
     String userId = currentUser.getUid();
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     String orderId = database.getReference().child("Orders").child(userId).push().getKey();
-    //String orderId = UUID.randomUUID().toString();
+    Calendar calendar = Calendar.getInstance();
+    Date currentDate = calendar.getTime();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +77,11 @@ public class CartActivity extends AppCompatActivity {
         binding.btnAddToCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+
+                String currentDateStr = dateFormat.format(currentDate);
+                String currentTimeStr = timeFormat.format(currentDate);
                 String userName = binding.editTxtName.getText().toString();
                 String userAddress = binding.editTxtAddress.getText().toString();
                 String userPhone = binding.edtTxtPhone.getText().toString();
@@ -100,7 +110,7 @@ public class CartActivity extends AppCompatActivity {
                     startActivity(intent);
                 }else {
                     String totalPrice = String.valueOf(managmentCart.getTotail());
-                    writeNewUser(userId, userName, userPhone, userAddress, totalPrice);
+                    writeNewUser(userId, userName, userPhone, userAddress, totalPrice, currentDateStr, currentTimeStr);
 
                     Toast.makeText(CartActivity.this,"Đặt hàng thành công!",Toast.LENGTH_SHORT).show();
                     try {
@@ -115,8 +125,8 @@ public class CartActivity extends AppCompatActivity {
         });
     }
 
-    public void writeNewUser(String userId, String userName, String userPhone, String userAddress, String price) {
-        modelUserOrder userOrder = new modelUserOrder(userName, userPhone, userAddress, price);
+    public void writeNewUser(String userId, String userName, String userPhone, String userAddress, String price, String date, String time) {
+        modelUserOrder userOrder = new modelUserOrder(userName, userPhone, userAddress, price, date, time);
         DatabaseReference userOrderRef = database.getReference().child("Orders").child(userId).child(orderId);
         userOrderRef.setValue(userOrder);
     }
@@ -124,7 +134,7 @@ public class CartActivity extends AppCompatActivity {
     public void writeNewOrder(String itemName, String itemNub, String itemPrice, String itemImg) {
         modelBuyNow buyNow = new modelBuyNow(itemName, itemNub, itemPrice, itemImg);
         //DatabaseReference orderDetailRef = database.getReference().child("Orders").child(userId).child(orderId).child("Detail").push();
-        DatabaseReference orderDetailRef = database.getReference().child("OrderDetail").child(orderId).push();
+        DatabaseReference orderDetailRef = database.getReference().child("OrderDetail").child(userId).child(orderId).push();
         orderDetailRef.setValue(buyNow);
     }
 

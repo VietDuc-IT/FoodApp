@@ -26,6 +26,19 @@
         app:layout_constraintTop_toTopOf="@+id/view3"
         android:src="@drawable/user" />
 
+    <ImageView
+        android:id="@+id/btnBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/back_background"
+        android:alpha="0.5"
+        android:padding="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/back" />
+
     <TextView
         android:id="@+id/txtName"
         android:layout_width="wrap_content"
@@ -77,7 +90,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="Nhập số điện thoại"
-            android:inputType="textPersonName"
+            android:inputType="phone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView3" />
 

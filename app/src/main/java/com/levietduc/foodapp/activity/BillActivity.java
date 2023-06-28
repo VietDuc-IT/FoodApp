@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -29,6 +30,7 @@ import com.levietduc.foodapp.databinding.ActivityBillBinding;
 import com.levietduc.foodapp.model.modelBill;
 import com.levietduc.foodapp.model.modelBillId;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,11 +56,16 @@ public class BillActivity extends AppCompatActivity {
     }
 
     private void addEvents() {
-
+        binding.btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(BillActivity.this,MainActivity.class));
+            }
+        });
     }
 
     private void recyclerViewBill() {
-        DatabaseReference detailRef = FirebaseDatabase.getInstance().getReference().child("OrderDetail");
+        DatabaseReference detailRef = FirebaseDatabase.getInstance().getReference().child("OrderDetail").child(userId);
         detailRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -98,6 +105,9 @@ public class BillActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = dialog.findViewById(R.id.recycleViewDialog);
         TextView txtPrice = dialog.findViewById(R.id.txtPrice);
+        TextView txtPhone = dialog.findViewById(R.id.txtPhone);
+        TextView txtAddress = dialog.findViewById(R.id.txtAddress);
+        TextView txtTime = dialog.findViewById(R.id.txtTime);
         Button btnClose = dialog.findViewById(R.id.btnClose);
 
         // Danh sách sản phẩm
@@ -105,7 +115,7 @@ public class BillActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
         FirebaseRecyclerOptions<modelBill> options =
                 new FirebaseRecyclerOptions.Builder<modelBill>()
-                        .setQuery(FirebaseDatabase.getInstance().getReference().child("OrderDetail").child(p), modelBill.class)
+                        .setQuery(FirebaseDatabase.getInstance().getReference().child("OrderDetail").child(userId).child(p), modelBill.class)
                         .build();
 
         adapterBill = new adapterBill(options);
@@ -118,10 +128,20 @@ public class BillActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    String name = dataSnapshot.child("name").getValue(String.class);
+                    String phone = dataSnapshot.child("phone").getValue(String.class);
+                    String address = dataSnapshot.child("address").getValue(String.class);
                     String price = dataSnapshot.child("price").getValue(String.class);
+                    String date = dataSnapshot.child("date").getValue(String.class);
+                    String time = dataSnapshot.child("time").getValue(String.class);
 
-                    txtPrice.setText(price);
+                    DecimalFormat decimalFormat = new DecimalFormat("###,###,###");
+                    double number = Double.parseDouble(price);
+                    String total = decimalFormat.format(number);
+
+                    txtPrice.setText(total+" VNĐ");
+                    txtAddress.setText(address);
+                    txtPhone.setText(phone);
+                    txtTime.setText(date+" "+time);
                 }
             }
             @Override
@@ -163,7 +183,7 @@ public class BillActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
         FirebaseRecyclerOptions<modelBill> options =
                 new FirebaseRecyclerOptions.Builder<modelBill>()
-                        .setQuery(FirebaseDatabase.getInstance().getReference().child("OrderDetail").child(p), modelBill.class)
+                        .setQuery(FirebaseDatabase.getInstance().getReference().child("OrderDetail").child(userId).child(p), modelBill.class)
                         .build();
 
         adapterBill = new adapterBill(options);
@@ -228,7 +248,7 @@ public class BillActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
         FirebaseRecyclerOptions<modelBill> options =
                 new FirebaseRecyclerOptions.Builder<modelBill>()
-                        .setQuery(FirebaseDatabase.getInstance().getReference().child("OrderDetail").child(p), modelBill.class)
+                        .setQuery(FirebaseDatabase.getInstance().getReference().child("OrderDetail").child(userId).child(p), modelBill.class)
                         .build();
 
         adapterBill = new adapterBill(options);

@@ -94,6 +94,12 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void addEvents() {
+        binding.btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(ProfileActivity.this,MainActivity.class));
+            }
+        });
         binding.btnUpdateProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

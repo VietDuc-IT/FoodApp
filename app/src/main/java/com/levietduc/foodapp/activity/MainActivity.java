@@ -4,21 +4,29 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -32,11 +40,17 @@ import com.levietduc.foodapp.adapter.adapterProduct;
 import com.levietduc.foodapp.databinding.ActivityMainBinding;
 import com.levietduc.foodapp.model.modelBanner;
 import com.levietduc.foodapp.model.modelCategory;
+import com.levietduc.foodapp.model.modelFeedback;
 import com.levietduc.foodapp.model.modelPopular;
 import com.levietduc.foodapp.model.modelProduct;
+import com.levietduc.foodapp.model.modelUserOrder;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -45,14 +59,14 @@ public class MainActivity extends AppCompatActivity {
     adapterCategory adapterCategory;
     adapterProduct adapterProduct;
     adapterBanner adapterBanner;
-
-    FirebaseDatabase database;
-    DatabaseReference category,product;
     ArrayList<modelBanner> banners;
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    List<modelPopular> modelPopularList;
-    adapterPopular adapterPopular;
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    FirebaseUser currentUser = mAuth.getCurrentUser();
+    String userId = currentUser.getUid();
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
     private Timer timer;
+    Calendar calendar = Calendar.getInstance();
+    Date currentDate = calendar.getTime();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -243,6 +257,66 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(MainActivity.this,BillActivity.class));
+            }
+        });
+
+        binding.btnFeedback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openDialog();
+            }
+
+            private void openDialog() {
+                Dialog dialog = new Dialog(MainActivity.this);
+                dialog.setContentView(R.layout.dialog_feedback);
+
+                Window window = dialog.getWindow();
+                if (window != null) {
+                    WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+                    layoutParams.copyFrom(window.getAttributes());
+                    layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+                    layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                    window.setAttributes(layoutParams);
+                }
+
+                EditText edtMessage = dialog.findViewById(R.id.editfeedback);
+                Button btnClose = dialog.findViewById(R.id.btnClose);
+                Button btnSend = dialog.findViewById(R.id.btnSend);
+
+                btnSend.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String message = edtMessage.getText().toString();
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+
+                        String currentDateStr = dateFormat.format(currentDate);
+                        String currentTimeStr = timeFormat.format(currentDate);
+
+                        if(TextUtils.isEmpty(message)){
+                            Toast.makeText(MainActivity.this,"Bạn chưa nhập nội dung!",Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+                        writeNewFeedback(userId, message, currentDateStr, currentTimeStr);
+                        Toast.makeText(MainActivity.this,"Phản hồi thành công!",Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
+                    }
+
+                    private void writeNewFeedback(String userId, String message, String date, String time) {
+                        modelFeedback modelFeedback = new modelFeedback(message,date,time);
+                        DatabaseReference userOrderRef = database.getReference().child("Feedback").child(userId).push();
+                        userOrderRef.setValue(modelFeedback);
+                    }
+                });
+                btnClose.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.show();
             }
         });
     }
